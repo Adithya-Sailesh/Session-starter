@@ -20,12 +20,21 @@ class EmployeeRepository {
     }
     findMany() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.repostiory.find();
+            return this.repostiory.find({
+                relations: {
+                    address: true
+                }
+            });
         });
     }
     findone(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.repostiory.findOneBy({ id });
+            return this.repostiory.findOne({
+                where: { id },
+                relations: {
+                    address: true
+                }
+            });
         });
     }
     ;

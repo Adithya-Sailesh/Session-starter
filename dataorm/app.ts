@@ -3,14 +3,17 @@ import employeeRouter from "./routes/employee.route";
 import loggerMiddleware from "./loggerMiddleware";
 
 import datasource from "./db/data-source";
+import processTimeMiddleware from "./processTimeMiddleware";
+import { errorMiddleware } from "./errorMiddleware";
 
 
 const server = express();
 server.use(express.json());
 server.use(loggerMiddleware);
+// server.use(processTimeMiddleware)
 
 server.use("/employee", employeeRouter);
-
+server.use(errorMiddleware)
 server.get("/", (req, res) => {
   console.log(req.url);
   res.status(200).send("Hello world typescript");

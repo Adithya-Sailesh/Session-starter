@@ -27,11 +27,13 @@ class EmployeeService {
             return this.employeeRepository.findone(id);
         });
     }
-    createEmployee(email, name) {
+    createEmployee(email, name, age, address) {
         return __awaiter(this, void 0, void 0, function* () {
             const emp = new employee_entity_1.default();
             emp.name = name;
             emp.email = email;
+            emp.age = age;
+            emp.address = address;
             return this.employeeRepository.create(emp);
         });
     }
