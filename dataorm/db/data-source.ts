@@ -3,13 +3,15 @@ import { DataSource } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import Employee from "../entities/employee.entity";
 import Address from "../entities/adress.entity";
+import 'dotenv/config'
+
 const datasource=new DataSource({
     type:'postgres',
     host:'localhost',
     port:5432,
     database:'training',
     username:'postgres',
-    password:'postgres',
+    password:process.env.DB_PASSWORD , 
     extra:{max:5,min:2},
     synchronize:false,
     logging:true,

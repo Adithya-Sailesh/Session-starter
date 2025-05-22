@@ -3,6 +3,13 @@ import { Column,CreateDateColumn,Entity,PrimaryGeneratedColumn,UpdateDateColumn 
 import AbstractEntity from "./abstract.entity";
 import Address from "./adress.entity";
 
+export enum EmployeeRole{
+  UI="UI",
+  UX="UX",
+  DEVELOPER="DEVELOPER",
+  HR="HR"
+}
+
 @Entity()
 class Employee extends AbstractEntity{
    
@@ -24,9 +31,16 @@ class Employee extends AbstractEntity{
     address:Address;
 
     @Column()
-    password:String;
+    password:string;
    
-    
+    @Column({
+      type:'enum',
+      enum:EmployeeRole,
+      default:EmployeeRole.DEVELOPER
+    })
+    role:EmployeeRole
+
+  
   }
   
   export default Employee;

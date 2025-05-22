@@ -17,11 +17,14 @@ const employee_route_1 = __importDefault(require("./routes/employee.route"));
 const loggerMiddleware_1 = __importDefault(require("./loggerMiddleware"));
 const data_source_1 = __importDefault(require("./db/data-source"));
 const errorMiddleware_1 = require("./errorMiddleware");
+const auth_router_1 = require("./routes/auth.router");
+const auth_middleware_1 = require("./auth.middleware");
 const server = (0, express_1.default)();
 server.use(express_1.default.json());
 server.use(loggerMiddleware_1.default);
 // server.use(processTimeMiddleware)
-server.use("/employee", employee_route_1.default);
+server.use("/employee", auth_middleware_1.authMiddleware, employee_route_1.default);
+server.use("/auth", auth_router_1.authRouter);
 server.use(errorMiddleware_1.errorMiddleware);
 server.get("/", (req, res) => {
     console.log(req.url);

@@ -18,6 +18,11 @@ class EmployeeRepository {
             return this.repostiory.save(employee);
         });
     }
+    findbymail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.repostiory.findOneBy({ email });
+        });
+    }
     findMany() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.repostiory.find({

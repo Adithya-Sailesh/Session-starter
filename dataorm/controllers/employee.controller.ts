@@ -7,14 +7,15 @@ import { plainToInstance } from "class-transformer";
 import {validate} from "class-validator"
 import { CreateEmployeeDto } from "../dto/CreateEmployeeDto";
 import { CreateAddressDto } from "../dto/create-address.dto";
+import { AuthorizationMiddleware } from "../authorizationMiddleware";
 
 class EmployeeControlers{
     constructor(private employeeService:EmployeeService,router:Router){
-        router.post("/",this.createEmployee.bind(this))
+        router.post("/",AuthorizationMiddleware, this.createEmployee.bind(this))
         router.get("/",this.getAllEmployees.bind(this))
         router.get("/:id",this.getEmloyeeById.bind(this))
-        router.put("/",this.updateEmployee)
-        router.delete("/:id",this.deleteEmployee)
+        router.put("/",AuthorizationMiddleware,this.updateEmployee)
+        router.delete("/:id",AuthorizationMiddleware,this.deleteEmployee)
     }
 
     async createEmployee(req,res,next:NextFunction){
@@ -41,6 +42,7 @@ class EmployeeControlers{
                         createEmployeeDto.email,
                         createEmployeeDto.name,
                         createEmployeeDto.age,
+                        createEmployeeDto.role,
                         createEmployeeDto.password,
                         createEmployeeDto.address,
                         

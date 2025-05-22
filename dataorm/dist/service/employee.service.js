@@ -24,12 +24,25 @@ class EmployeeService {
             return this.employeeRepository.findMany();
         });
     }
+    // async getEmployeeById(id:number):Promise<Employee>{
+    //     let employee=await this.employeeRepository.findone(id)
+    //     if(!employee){
+    //         throw new error("User not found") 
+    //     }
+    //     catch{
+    //         return employee
+    //     }
+    // }
     getEmployeeById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.employeeRepository.findone(id);
+            let employee = yield this.employeeRepository.findone(id);
+            if (!employee) {
+                throw new Error("Employee not found");
+            }
+            return employee;
         });
     }
-    createEmployee(email, name, age, password, address) {
+    createEmployee(email, name, age, role, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
             // const emp=new Employee();
             // emp.name=name
@@ -43,6 +56,7 @@ class EmployeeService {
             newEmployee.email = email;
             newEmployee.name = name;
             newEmployee.age = age;
+            newEmployee.role = role;
             newEmployee.password = yield bcrypt_1.default.hash(password, 12);
             newEmployee.address = newAddress;
             return this.employeeRepository.create(newEmployee);
@@ -70,6 +84,11 @@ class EmployeeService {
             if (existingEmployee) {
                 yield this.employeeRepository.delete(id);
             }
+        });
+    }
+    findByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.findbymail(email);
         });
     }
 }

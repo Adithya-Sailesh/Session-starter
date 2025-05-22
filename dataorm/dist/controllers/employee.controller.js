@@ -16,6 +16,7 @@ const httpException_1 = __importDefault(require("../exception/httpException"));
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const CreateEmployeeDto_1 = require("../dto/CreateEmployeeDto");
+const authorizationMiddleware_1 = require("../authorizationMiddleware");
 class EmployeeControlers {
     constructor(employeeService, router) {
         this.employeeService = employeeService;
@@ -54,11 +55,11 @@ class EmployeeControlers {
             yield this.employeeService.deleteEmployee(req.params.id);
             res.status(200).send("Deleted");
         });
-        router.post("/", this.createEmployee.bind(this));
+        router.post("/", authorizationMiddleware_1.AuthorizationMiddleware, this.createEmployee.bind(this));
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmloyeeById.bind(this));
-        router.put("/", this.updateEmployee);
-        router.delete("/:id", this.deleteEmployee);
+        router.put("/", authorizationMiddleware_1.AuthorizationMiddleware, this.updateEmployee);
+        router.delete("/:id", authorizationMiddleware_1.AuthorizationMiddleware, this.deleteEmployee);
     }
     createEmployee(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -80,7 +81,7 @@ class EmployeeControlers {
                     console.log(JSON.stringify(errors));
                     throw new httpException_1.default(400, JSON.stringify(errors));
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.password, createEmployeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.role, createEmployeeDto.password, createEmployeeDto.address);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {

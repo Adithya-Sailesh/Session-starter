@@ -8,6 +8,13 @@ class EmployeeRepository{
             return this.repostiory.save(employee);
         }
 
+        
+        async findbymail(email:string):Promise<Employee>{
+            return this.repostiory.findOneBy({email})
+        }
+
+
+
         async findMany():Promise<Employee[]>{
 
             return this.repostiory.find({
