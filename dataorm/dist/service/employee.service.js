@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const adress_entity_1 = __importDefault(require("../entities/adress.entity"));
 const employee_entity_1 = __importDefault(require("../entities/employee.entity"));
 class EmployeeService {
     constructor(employeeRepository) {
@@ -29,22 +30,35 @@ class EmployeeService {
     }
     createEmployee(email, name, age, address) {
         return __awaiter(this, void 0, void 0, function* () {
-            const emp = new employee_entity_1.default();
-            emp.name = name;
-            emp.email = email;
-            emp.age = age;
-            emp.address = address;
-            return this.employeeRepository.create(emp);
+            // const emp=new Employee();
+            // emp.name=name
+            // emp.email=email
+            // emp.age=age
+            // emp.address=address
+            const newAddress = new adress_entity_1.default();
+            newAddress.line1 = address.line1;
+            newAddress.pincode = address.pincode;
+            const newEmployee = new employee_entity_1.default();
+            newEmployee.email = email;
+            newEmployee.name = name;
+            newEmployee.age = age;
+            newEmployee.address = newAddress;
+            return this.employeeRepository.create(newEmployee);
         });
     }
-    updateEmployee(id, email, name) {
+    updateEmployee(id, email, name, age, address) {
         return __awaiter(this, void 0, void 0, function* () {
             const existingEmployee = yield this.employeeRepository.findone(id);
             if (existingEmployee) {
-                const newEmployee = new employee_entity_1.default();
-                newEmployee.name = name;
-                newEmployee.email = email;
-                yield this.employeeRepository.update(id, newEmployee);
+                // const newEmployee=new Employee();
+                existingEmployee.name = name;
+                existingEmployee.email = email;
+                existingEmployee.age = age;
+                if (existingEmployee.address) {
+                    existingEmployee.address.line1 = address.line1;
+                    existingEmployee.address.pincode = address.pincode;
+                }
+                yield this.employeeRepository.update(id, existingEmployee);
             }
         });
     }

@@ -13,43 +13,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const httpException_1 = __importDefault(require("../exception/httpException"));
-const emailvalidator_1 = require("../validators/emailvalidator");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+const CreateEmployeeDto_1 = require("../dto/CreateEmployeeDto");
 class EmployeeControlers {
     constructor(employeeService, router) {
         this.employeeService = employeeService;
-        this.updateEmployee = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const id = req.body.id;
-            const name = req.body.name;
-            const email = req.body.email;
-            yield this.employeeService.updateEmployee(id, name, email);
-            res.status(201).send("Updated");
-        });
-        this.deleteEmployee = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            yield this.employeeService.deleteEmployee(req.params.id);
-            res.status(201).send("Deleted");
-        });
-        router.post("/", this.createEmployee.bind(this));
-        router.get("/", this.getAllEmployees.bind(this));
-        router.get("/:id", this.getEmloyeeById.bind(this));
-        router.put("/:id", this.updateEmployee);
-        router.delete("/:id", this.deleteEmployee);
-    }
-    createEmployee(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
+        this.updateEmployee = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                const id = req.body.id;
                 const name = req.body.name;
                 const email = req.body.email;
                 const age = req.body.age;
                 const address = req.body.address;
-                if (!(0, emailvalidator_1.isEmail)(email)) {
-                    throw new httpException_1.default(412, "Not valid email");
-                }
-                const employee = yield this.employeeService.createEmployee(email, name, age, address);
-                res.status(201).send(employee);
+                yield this.employeeService.updateEmployee(id, name, email, age, address);
+                res.status(201).send("Updated");
             }
             catch (err) {
-                console.error(err);
                 next(err);
+            }
+        });
+        this.deleteEmployee = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield this.employeeService.deleteEmployee(req.params.id);
+            res.status(200).send("Deleted");
+        });
+        router.post("/", this.createEmployee.bind(this));
+        router.get("/", this.getAllEmployees.bind(this));
+        router.get("/:id", this.getEmloyeeById.bind(this));
+        router.put("/", this.updateEmployee);
+        router.delete("/:id", this.deleteEmployee);
+    }
+    createEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // try{
+            //     const name=req.body.name;
+            //     const email=req.body.email;
+            //     const age=req.body.age
+            //     const address=req.body.address;
+            //     if(!isEmail(email)){
+            //         throw new HttpException(412,"Not valid email");
+            //     }
+            //     const employee= await this.employeeService.createEmployee(email,name,age,address);
+            //     res.status(201).send(employee)
+            // }
+            try {
+                const createEmployeeDto = (0, class_transformer_1.plainToInstance)(CreateEmployeeDto_1.CreateEmployeeDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(createEmployeeDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpException_1.default(400, JSON.stringify(errors));
+                }
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.address);
+                res.status(201).send(savedEmployee);
+            }
+            catch (error) {
+                next(error);
             }
         });
     }

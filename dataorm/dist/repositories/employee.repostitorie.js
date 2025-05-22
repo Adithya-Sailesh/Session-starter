@@ -45,7 +45,10 @@ class EmployeeRepository {
     }
     delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repostiory.delete({ id });
+            const employee = yield this.repostiory.findOne({ where: { id } });
+            if (employee) {
+                yield this.repostiory.softDelete({ id });
+            }
         });
     }
 }

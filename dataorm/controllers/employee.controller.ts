@@ -13,7 +13,7 @@ class EmployeeControlers{
         router.post("/",this.createEmployee.bind(this))
         router.get("/",this.getAllEmployees.bind(this))
         router.get("/:id",this.getEmloyeeById.bind(this))
-        router.put("/:id",this.updateEmployee)
+        router.put("/",this.updateEmployee)
         router.delete("/:id",this.deleteEmployee)
     }
 
@@ -30,23 +30,59 @@ class EmployeeControlers{
         //     res.status(201).send(employee)
         // }
 
-    try {
-      const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-      const errors = await validate(createEmployeeDto);
-      if (errors.length > 0) {
-        console.log(JSON.stringify(errors));
-        throw new HttpException(400, JSON.stringify(errors));
-      }
-      const savedEmployee = await this.employeeService.createEmployee(
-        createEmployeeDto.email,
-        createEmployeeDto.name,
-        createEmployeeDto.age,
-        createEmployeeDto.address
-      );
-      res.status(201).send(savedEmployee);
-    } catch (error) {
-      next(error);
-    }   
+                    try {
+                    const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+                    const errors = await validate(createEmployeeDto);
+                    if (errors.length > 0) {
+                        console.log(JSON.stringify(errors));
+                        throw new HttpException(400, JSON.stringify(errors));
+                    }
+                    const savedEmployee = await this.employeeService.createEmployee(
+                        createEmployeeDto.email,
+                        createEmployeeDto.name,
+                        createEmployeeDto.age,
+                        createEmployeeDto.address
+                    );
+                    res.status(201).send(savedEmployee);
+                    } catch (error) {
+                    next(error);
+                    }   
+        
+    }
+
+
+    updateEmployee=async(req,res,next:NextFunction)=>{
+        try{
+            const id=req.body.id
+            const name=req.body.name
+            const email=req.body.email
+            const age=req.body.age
+            const address=req.body.address
+            await this.employeeService.updateEmployee(id,name,email,age,address);
+            res.status(201).send("Updated")
+        }
+        catch(err){
+            next(err)
+        }
+
+        // try {
+        //     const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+        //     const errors = await validate(createEmployeeDto);
+        //     if (errors.length > 0) {
+        //         console.log(JSON.stringify(errors));
+        //         throw new HttpException(400, JSON.stringify(errors));
+        //     }
+        //     const savedEmployee = await this.employeeService.updateEmployee(
+        //         createEmployeeDto.email,
+        //         createEmployeeDto.name,
+        //         createEmployeeDto.age,
+        //         createEmployeeDto.address
+        //     );
+        //     res.status(201).send(savedEmployee);
+        //     } catch (error) {
+        //     next(error);
+        //     }   
+
         
     }
 
@@ -70,17 +106,11 @@ class EmployeeControlers{
         
     }
 
-   updateEmployee=async(req,res)=>{
-        const id=req.body.id
-        const name=req.body.name
-        const email=req.body.email
-        await this.employeeService.updateEmployee(id,name,email);
-        res.status(201).send("Updated")
-    }
+   
 
    deleteEmployee= async (req,res)=>{
         await this.employeeService.deleteEmployee(req.params.id);
-        res.status(201).send("Deleted")
+        res.status(200).send("Deleted")
     }
 
 }

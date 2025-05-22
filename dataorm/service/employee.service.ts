@@ -1,3 +1,4 @@
+import { StreamDescription } from "typeorm";
 import { CreateAddressDto } from "../dto/create-address.dto";
 import Address from "../entities/adress.entity";
 import Employee from "../entities/employee.entity";
@@ -32,14 +33,19 @@ class EmployeeService{
         newEmployee.address = newAddress;
         return this.employeeRepository.create(newEmployee)
     }
-    async updateEmployee(id:number,email:string,name:string):Promise<void>{
+    async updateEmployee(id:number,email:string,name:string,age:number,address:CreateAddressDto):Promise<void>{
 
         const existingEmployee=await this.employeeRepository.findone(id);
         if(existingEmployee){
-            const newEmployee=new Employee();
-            newEmployee.name=name
-            newEmployee.email=email
-            await this.employeeRepository.update(id,newEmployee);
+            // const newEmployee=new Employee();
+            existingEmployee.name=name
+            existingEmployee.email=email
+            existingEmployee.age=age
+            if(existingEmployee.address){
+                existingEmployee.address.line1=address.line1
+                existingEmployee.address.pincode=address.pincode
+            }
+            await this.employeeRepository.update(id,existingEmployee);
         }
     }
 

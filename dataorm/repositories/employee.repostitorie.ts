@@ -35,8 +35,11 @@ class EmployeeRepository{
         }
 
         async delete(id:number):Promise<void>{
+            const employee = await this.repostiory.findOne({ where: { id } });
+            if(employee){
+                await this.repostiory.softDelete({id});
+            }
             
-            await this.repostiory.delete({id});
         }
     }
 

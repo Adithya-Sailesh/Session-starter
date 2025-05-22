@@ -14,6 +14,7 @@ class Address extends AbstractEntity{
     pincode:string
 
     @OneToOne(()=>Employee)
+    
     employee:Employee
 }
 
