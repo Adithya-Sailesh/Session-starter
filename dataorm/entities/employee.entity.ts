@@ -23,7 +23,9 @@ class Employee extends AbstractEntity{
     @JoinColumn()
     address:Address;
 
-    @
+    @Column()
+    password:String;
+   
     
   }
   

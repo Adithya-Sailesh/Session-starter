@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const adress_entity_1 = __importDefault(require("../entities/adress.entity"));
 const employee_entity_1 = __importDefault(require("../entities/employee.entity"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class EmployeeService {
     constructor(employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -28,7 +29,7 @@ class EmployeeService {
             return this.employeeRepository.findone(id);
         });
     }
-    createEmployee(email, name, age, address) {
+    createEmployee(email, name, age, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
             // const emp=new Employee();
             // emp.name=name
@@ -42,6 +43,7 @@ class EmployeeService {
             newEmployee.email = email;
             newEmployee.name = name;
             newEmployee.age = age;
+            newEmployee.password = yield bcrypt_1.default.hash(password, 12);
             newEmployee.address = newAddress;
             return this.employeeRepository.create(newEmployee);
         });

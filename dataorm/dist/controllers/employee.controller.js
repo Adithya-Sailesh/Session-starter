@@ -32,6 +32,23 @@ class EmployeeControlers {
             catch (err) {
                 next(err);
             }
+            // try {
+            //     const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+            //     const errors = await validate(createEmployeeDto);
+            //     if (errors.length > 0) {
+            //         console.log(JSON.stringify(errors));
+            //         throw new HttpException(400, JSON.stringify(errors));
+            //     }
+            //     const savedEmployee = await this.employeeService.updateEmployee(
+            //         createEmployeeDto.email,
+            //         createEmployeeDto.name,
+            //         createEmployeeDto.age,
+            //         createEmployeeDto.address
+            //     );
+            //     res.status(201).send(savedEmployee);
+            //     } catch (error) {
+            //     next(error);
+            //     }   
         });
         this.deleteEmployee = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield this.employeeService.deleteEmployee(req.params.id);
@@ -63,7 +80,7 @@ class EmployeeControlers {
                     console.log(JSON.stringify(errors));
                     throw new httpException_1.default(400, JSON.stringify(errors));
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.password, createEmployeeDto.address);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {

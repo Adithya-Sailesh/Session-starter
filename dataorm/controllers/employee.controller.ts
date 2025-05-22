@@ -41,7 +41,9 @@ class EmployeeControlers{
                         createEmployeeDto.email,
                         createEmployeeDto.name,
                         createEmployeeDto.age,
-                        createEmployeeDto.address
+                        createEmployeeDto.password,
+                        createEmployeeDto.address,
+                        
                     );
                     res.status(201).send(savedEmployee);
                     } catch (error) {
