@@ -17,39 +17,38 @@ const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const CreateEmployeeDto_1 = require("../dto/CreateEmployeeDto");
 const authorizationMiddleware_1 = require("../authorizationMiddleware");
+const UpdateEmployee_dto_1 = require("../dto/UpdateEmployee.dto");
 class EmployeeControlers {
     constructor(employeeService, router) {
         this.employeeService = employeeService;
         this.updateEmployee = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            // try{
+            //     const id=req.body.id
+            //     const name=req.body.name
+            //     const email=req.body.email
+            //     const age=req.body.age
+            //     const role=req.body.role
+            //     const address=req.body.address  
+            //     const password=req.body.password
+            //     await this.employeeService.updateEmployee(id,name,email,age,role,password,address);
+            //     res.status(201).send("Updated")
+            // }
+            // catch(err){
+            //     next(err)
+            // }
             try {
-                const id = req.body.id;
-                const name = req.body.name;
-                const email = req.body.email;
-                const age = req.body.age;
-                const address = req.body.address;
-                yield this.employeeService.updateEmployee(id, name, email, age, address);
-                res.status(201).send("Updated");
+                const updateEmployeeDto = (0, class_transformer_1.plainToInstance)(UpdateEmployee_dto_1.UpdateEmployeeDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(updateEmployeeDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpException_1.default(400, JSON.stringify(errors));
+                }
+                const update = yield this.employeeService.updateEmployee(updateEmployeeDto.id, updateEmployeeDto.email, updateEmployeeDto.name, updateEmployeeDto.age, updateEmployeeDto.role, updateEmployeeDto.dept_id, updateEmployeeDto.password, updateEmployeeDto.address);
+                res.status(201).send("updated");
             }
-            catch (err) {
-                next(err);
+            catch (error) {
+                next(error);
             }
-            // try {
-            //     const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-            //     const errors = await validate(createEmployeeDto);
-            //     if (errors.length > 0) {
-            //         console.log(JSON.stringify(errors));
-            //         throw new HttpException(400, JSON.stringify(errors));
-            //     }
-            //     const savedEmployee = await this.employeeService.updateEmployee(
-            //         createEmployeeDto.email,
-            //         createEmployeeDto.name,
-            //         createEmployeeDto.age,
-            //         createEmployeeDto.address
-            //     );
-            //     res.status(201).send(savedEmployee);
-            //     } catch (error) {
-            //     next(error);
-            //     }   
         });
         this.deleteEmployee = (req, res) => __awaiter(this, void 0, void 0, function* () {
             yield this.employeeService.deleteEmployee(req.params.id);
@@ -81,7 +80,7 @@ class EmployeeControlers {
                     console.log(JSON.stringify(errors));
                     throw new httpException_1.default(400, JSON.stringify(errors));
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.role, createEmployeeDto.password, createEmployeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.role, createEmployeeDto.dept_id, createEmployeeDto.password, createEmployeeDto.address);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {

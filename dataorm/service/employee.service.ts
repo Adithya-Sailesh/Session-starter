@@ -6,13 +6,15 @@ import EmployeeRepository from "../repositories/employee.repostitorie";
 
 import bcrypt from 'bcrypt'
 import HttpException from "../exception/httpException";
+import { LoggerService } from "./logger.service";
+import DeparmentRepository from "../repositories/department.repostiory";
 class EmployeeService{
-    constructor(private employeeRepository:EmployeeRepository){}
+    private logger=LoggerService.getInstance(EmployeeService.name)
+    constructor(private employeeRepository:EmployeeRepository ,private departmentRepository:DeparmentRepository){}
 
-     
-    
 
     async getAllEmployees():Promise<Employee[]>{
+        this.logger.info("Employes Found")
         return this.employeeRepository.findMany();
     }
     // async getEmployeeById(id:number):Promise<Employee>{
@@ -36,7 +38,7 @@ class EmployeeService{
   }
 
 
-    async createEmployee(email:string,name:string,age:number,role:EmployeeRole,password:string,address:CreateAddressDto):Promise<Employee>{
+    async createEmployee(email:string,name:string,age:number,role:EmployeeRole,dept_id:number,password:string,address:CreateAddressDto):Promise<Employee>{
         // const emp=new Employee();
         // emp.name=name
         // emp.email=email
@@ -50,23 +52,37 @@ class EmployeeService{
         newEmployee.name = name;
         newEmployee.age = age;
         newEmployee.role=role;
+        const dept=await this.departmentRepository.findbyid(dept_id)
+        if(!dept){
+            throw new HttpException(401,"Department Not Found")
+        }
+        newEmployee.department=dept;
         newEmployee.password=  await bcrypt.hash(password,12);
         newEmployee.address = newAddress;
         
         return this.employeeRepository.create(newEmployee)
     }
-    async updateEmployee(id:number,email:string,name:string,age:number,address:CreateAddressDto):Promise<void>{
-
+    async updateEmployee(id:number,email:string,name:string,age:number,role:EmployeeRole,dept_id:number,password:string,address:CreateAddressDto):Promise<void>{
+        this.logger.info("Updating Employee")
         const existingEmployee=await this.employeeRepository.findone(id);
+        const dept=await this.departmentRepository.findbyid(dept_id)
+        if(!dept){
+            throw new HttpException(401,"Department not found")
+        }
         if(existingEmployee){
             // const newEmployee=new Employee();
             existingEmployee.name=name
             existingEmployee.email=email
             existingEmployee.age=age
-            if(existingEmployee.address){
-                existingEmployee.address.line1=address.line1
-                existingEmployee.address.pincode=address.pincode
-            }
+            existingEmployee.role=role
+            
+            
+            existingEmployee.department=dept;
+            existingEmployee.password=await bcrypt.hash(password,12);
+                if(existingEmployee.address){
+                    existingEmployee.address.line1=address.line1
+                    existingEmployee.address.pincode=address.pincode
+                }
             await this.employeeRepository.update(id,existingEmployee);
         }
     }

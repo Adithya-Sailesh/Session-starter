@@ -15,12 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const adress_entity_1 = __importDefault(require("../entities/adress.entity"));
 const employee_entity_1 = __importDefault(require("../entities/employee.entity"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const httpException_1 = __importDefault(require("../exception/httpException"));
+const logger_service_1 = require("./logger.service");
 class EmployeeService {
-    constructor(employeeRepository) {
+    constructor(employeeRepository, departmentRepository) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
+        this.logger = logger_service_1.LoggerService.getInstance(EmployeeService.name);
     }
     getAllEmployees() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info("Employes Found");
             return this.employeeRepository.findMany();
         });
     }
@@ -42,7 +47,7 @@ class EmployeeService {
             return employee;
         });
     }
-    createEmployee(email, name, age, role, password, address) {
+    createEmployee(email, name, age, role, dept_id, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
             // const emp=new Employee();
             // emp.name=name
@@ -57,19 +62,32 @@ class EmployeeService {
             newEmployee.name = name;
             newEmployee.age = age;
             newEmployee.role = role;
+            const dept = yield this.departmentRepository.findbyid(dept_id);
+            if (!dept) {
+                throw new httpException_1.default(401, "Department Not Found");
+            }
+            newEmployee.department = dept;
             newEmployee.password = yield bcrypt_1.default.hash(password, 12);
             newEmployee.address = newAddress;
             return this.employeeRepository.create(newEmployee);
         });
     }
-    updateEmployee(id, email, name, age, address) {
+    updateEmployee(id, email, name, age, role, dept_id, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info("Updating Employee");
             const existingEmployee = yield this.employeeRepository.findone(id);
+            const dept = yield this.departmentRepository.findbyid(dept_id);
+            if (!dept) {
+                throw new httpException_1.default(401, "Department not found");
+            }
             if (existingEmployee) {
                 // const newEmployee=new Employee();
                 existingEmployee.name = name;
                 existingEmployee.email = email;
                 existingEmployee.age = age;
+                existingEmployee.role = role;
+                existingEmployee.department = dept;
+                existingEmployee.password = yield bcrypt_1.default.hash(password, 12);
                 if (existingEmployee.address) {
                     existingEmployee.address.line1 = address.line1;
                     existingEmployee.address.pincode = address.pincode;

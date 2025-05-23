@@ -1,4 +1,4 @@
-import { Column, DeleteDateColumn, Entity ,UpdateDateColumn,CreateDateColumn, PrimaryColumn, PrimaryGeneratedColumn, OneToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity ,UpdateDateColumn,CreateDateColumn, PrimaryColumn, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import AbstractEntity from "./abstract.entity";
 import Employee from "./employee.entity";
 
@@ -13,9 +13,20 @@ class Address extends AbstractEntity{
     @Column()
     pincode:string
 
-    @OneToOne(()=>Employee)
-    
-    employee:Employee
+    @Column()
+    line2:string
+
+    @Column()
+    houseNo:string
+
+    @OneToOne(() => Employee, (employee) => employee.address, {
+     onDelete: 'CASCADE'
+    })
+    @JoinColumn()
+    employee: Employee;
+
+
+   
 }
 
 export default Address

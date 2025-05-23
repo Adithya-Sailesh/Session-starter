@@ -19,7 +19,8 @@ class EmployeeRepository{
 
             return this.repostiory.find({
                     relations:{
-                        address:true
+                        address:true,
+                        department:true
                     }
             }
                 
@@ -30,7 +31,8 @@ class EmployeeRepository{
             return this.repostiory.findOne({
                 where:{id},
                 relations:{
-                    address:true
+                    address:true,
+                    department:true
                 }
                 }
             );

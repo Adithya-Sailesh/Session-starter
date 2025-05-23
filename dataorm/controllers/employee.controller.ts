@@ -8,6 +8,7 @@ import {validate} from "class-validator"
 import { CreateEmployeeDto } from "../dto/CreateEmployeeDto";
 import { CreateAddressDto } from "../dto/create-address.dto";
 import { AuthorizationMiddleware } from "../authorizationMiddleware";
+import { UpdateEmployeeDto } from "../dto/UpdateEmployee.dto";
 
 class EmployeeControlers{
     constructor(private employeeService:EmployeeService,router:Router){
@@ -43,6 +44,7 @@ class EmployeeControlers{
                         createEmployeeDto.name,
                         createEmployeeDto.age,
                         createEmployeeDto.role,
+                        createEmployeeDto.dept_id,
                         createEmployeeDto.password,
                         createEmployeeDto.address,
                         
@@ -56,36 +58,44 @@ class EmployeeControlers{
 
 
     updateEmployee=async(req,res,next:NextFunction)=>{
-        try{
-            const id=req.body.id
-            const name=req.body.name
-            const email=req.body.email
-            const age=req.body.age
-            const address=req.body.address
-            await this.employeeService.updateEmployee(id,name,email,age,address);
-            res.status(201).send("Updated")
-        }
-        catch(err){
-            next(err)
-        }
+        // try{
+        //     const id=req.body.id
+        //     const name=req.body.name
+        //     const email=req.body.email
+        //     const age=req.body.age
+        //     const role=req.body.role
+        //     const address=req.body.address  
+        //     const password=req.body.password
+        //     await this.employeeService.updateEmployee(id,name,email,age,role,password,address);
+        //     res.status(201).send("Updated")
+        // }
+        // catch(err){
+        //     next(err)
+        // }
 
-        // try {
-        //     const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-        //     const errors = await validate(createEmployeeDto);
-        //     if (errors.length > 0) {
-        //         console.log(JSON.stringify(errors));
-        //         throw new HttpException(400, JSON.stringify(errors));
-        //     }
-        //     const savedEmployee = await this.employeeService.updateEmployee(
-        //         createEmployeeDto.email,
-        //         createEmployeeDto.name,
-        //         createEmployeeDto.age,
-        //         createEmployeeDto.address
-        //     );
-        //     res.status(201).send(savedEmployee);
-        //     } catch (error) {
-        //     next(error);
-        //     }   
+         try {
+                    const updateEmployeeDto = plainToInstance(UpdateEmployeeDto, req.body);
+                    const errors = await validate(updateEmployeeDto);
+                    if (errors.length > 0) {
+                        console.log(JSON.stringify(errors));
+                        throw new HttpException(400, JSON.stringify(errors));
+                    }
+                    const update = await this.employeeService.updateEmployee(
+                        updateEmployeeDto.id,
+                        updateEmployeeDto.email,
+                        updateEmployeeDto.name,
+                        updateEmployeeDto.age,
+                        updateEmployeeDto.role,
+                        updateEmployeeDto.dept_id,
+                        updateEmployeeDto.password,
+                        updateEmployeeDto.address
+                        
+                    );
+                    res.status(201).send("updated");
+                    } catch (error) {
+                    next(error);
+                    }   
+      
 
         
     }

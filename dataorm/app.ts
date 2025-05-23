@@ -7,28 +7,32 @@ import processTimeMiddleware from "./processTimeMiddleware";
 import { errorMiddleware } from "./errorMiddleware";
 import { authRouter } from "./routes/auth.router";
 import { authMiddleware } from "./auth.middleware";
+import { LoggerService } from "./service/logger.service";
+import { departmentRouter } from "./routes/department.router";
 
 
 const server = express();
+const logger=LoggerService.getInstance('app()');
 server.use(express.json());
 server.use(loggerMiddleware);
 // server.use(processTimeMiddleware)
 
 server.use("/employee", authMiddleware, employeeRouter);
 server.use("/auth", authRouter);
+server.use("/department",departmentRouter)
 server.use(errorMiddleware)
 server.get("/", (req, res) => {
-  console.log(req.url);
+  logger.info(req.url);
   res.status(200).send("Hello world typescript");
 });
 
 (async()=>{
   try{
     await datasource.initialize();
-    console.log("connected")
+    logger.info("Database connected")
   }
   catch{
-    console.error('Failed to connect to DB');
+    logger.error('Failed to connect to DB');
     process.exit(1);
   }
 

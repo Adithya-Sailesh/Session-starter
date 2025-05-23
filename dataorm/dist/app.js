@@ -19,24 +19,28 @@ const data_source_1 = __importDefault(require("./db/data-source"));
 const errorMiddleware_1 = require("./errorMiddleware");
 const auth_router_1 = require("./routes/auth.router");
 const auth_middleware_1 = require("./auth.middleware");
+const logger_service_1 = require("./service/logger.service");
+const department_router_1 = require("./routes/department.router");
 const server = (0, express_1.default)();
+const logger = logger_service_1.LoggerService.getInstance('app()');
 server.use(express_1.default.json());
 server.use(loggerMiddleware_1.default);
 // server.use(processTimeMiddleware)
 server.use("/employee", auth_middleware_1.authMiddleware, employee_route_1.default);
 server.use("/auth", auth_router_1.authRouter);
+server.use("/department", department_router_1.departmentRouter);
 server.use(errorMiddleware_1.errorMiddleware);
 server.get("/", (req, res) => {
-    console.log(req.url);
+    logger.info(req.url);
     res.status(200).send("Hello world typescript");
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield data_source_1.default.initialize();
-        console.log("connected");
+        logger.info("Database connected");
     }
     catch (_a) {
-        console.error('Failed to connect to DB');
+        logger.error('Failed to connect to DB');
         process.exit(1);
     }
     server.listen(3000, () => {
