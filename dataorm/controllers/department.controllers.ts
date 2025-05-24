@@ -2,6 +2,11 @@ import { http } from "winston";
 import { DepartmentService } from "../service/department.service";
 import HttpException from "../exception/httpException";
 import { NextFunction, Router } from "express";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { CreateEmployeeDto } from "../dto/CreateEmployeeDto";
+import { CreateDepartmentDto } from "../dto/CreateDept.dto";
+import { UpdateDepartmentDto} from "../dto/updateDept.dto";
 
 
 export class DeparmentContollers{
@@ -15,11 +20,25 @@ export class DeparmentContollers{
     }
 
 
-    async createDepartment(req,res){
-        const deptname=req.body.deptname
+    async createDepartment(req,res,next:NextFunction){
 
-        const dept=await this.departmentService.createDept(deptname)
-        res.status(201).send(dept)
+                try {
+                    const createDepartmentDto = plainToInstance(CreateDepartmentDto, req.body);
+                    const errors = await validate(createDepartmentDto);
+                    if (errors.length > 0) {
+                        console.log(JSON.stringify(errors));
+                        throw new HttpException(400, JSON.stringify(errors));
+                    }
+                    const savedDepartment = await this.departmentService.createDept(
+                        createDepartmentDto.name,
+                     
+                        
+                    );
+                    res.status(201).send(savedDepartment);
+                    } 
+                    catch (error) {
+                        next(error);
+                    }
     }
 
     async getAllDepartment(req,res){
@@ -43,12 +62,19 @@ export class DeparmentContollers{
 
     async updateDepartment(req,res,next:NextFunction){
         try{
+
+            const updateDepartmentDto=plainToInstance(UpdateDepartmentDto,req.body)
+            const errors = await validate(updateDepartmentDto);
+                    if (errors.length > 0) {
+                        console.log(JSON.stringify(errors));
+                        throw new HttpException(400, JSON.stringify(errors));
+                    }
             const id=req.params.id
             const dept=this.departmentService.getDeptbyId(id)
             if(!dept){
                 throw new HttpException(401,"Dept Cannot be found")
             }
-            const updateDept=await this.departmentService.updateDepartment(id,req.body.deptname)
+            const updateDept=await this.departmentService.updateDepartment(id,updateDepartmentDto.name)
             res.status(200).send("Updated")
         }
         catch(err){

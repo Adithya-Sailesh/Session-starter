@@ -2,7 +2,7 @@ import { IsDate, IsEmail, IsEnum, isNotEmpty, IsNotEmpty, IsNumber, IsString, Mi
 import { CreateAddressDto } from "./create-address.dto";
 import { Type } from "class-transformer";
 import { EmployeeRole, EmployeeStatus } from "../entities/employee.entity";
-import { createDepartmentDto } from "./CreateDept.dto";
+import { CreateDepartmentDto } from "./CreateDept.dto";
 
 export class CreateEmployeeDto {
 

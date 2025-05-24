@@ -23,8 +23,8 @@ __decorate([
 ], Department.prototype, "deptname", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => employee_entity_1.default, (employee) => employee.department, {
-    // onDelete:"SET NULL" //wrong
-    // cascade:true
+        // onDelete:"SET NULL" //wrong
+        cascade: true
     }),
     __metadata("design:type", Array)
 ], Department.prototype, "employee", void 0);

@@ -14,6 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeparmentContollers = void 0;
 const httpException_1 = __importDefault(require("../exception/httpException"));
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+const CreateDept_dto_1 = require("../dto/CreateDept.dto");
+const updateDept_dto_1 = require("../dto/updateDept.dto");
 class DeparmentContollers {
     constructor(departmentService, router) {
         this.departmentService = departmentService;
@@ -23,11 +27,21 @@ class DeparmentContollers {
         router.put("/:id", this.updateDepartment.bind(this));
         router.delete("/:id", this.deleteDept.bind(this));
     }
-    createDepartment(req, res) {
+    createDepartment(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deptname = req.body.deptname;
-            const dept = yield this.departmentService.createDept(deptname);
-            res.status(201).send(dept);
+            try {
+                const createDepartmentDto = (0, class_transformer_1.plainToInstance)(CreateDept_dto_1.CreateDepartmentDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(createDepartmentDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpException_1.default(400, JSON.stringify(errors));
+                }
+                const savedDepartment = yield this.departmentService.createDept(createDepartmentDto.name);
+                res.status(201).send(savedDepartment);
+            }
+            catch (error) {
+                next(error);
+            }
         });
     }
     getAllDepartment(req, res) {
@@ -54,12 +68,18 @@ class DeparmentContollers {
     updateDepartment(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const updateDepartmentDto = (0, class_transformer_1.plainToInstance)(updateDept_dto_1.UpdateDepartmentDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(updateDepartmentDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpException_1.default(400, JSON.stringify(errors));
+                }
                 const id = req.params.id;
                 const dept = this.departmentService.getDeptbyId(id);
                 if (!dept) {
                     throw new httpException_1.default(401, "Dept Cannot be found");
                 }
-                const updateDept = yield this.departmentService.updateDepartment(id, req.body.deptname);
+                const updateDept = yield this.departmentService.updateDepartment(id, updateDepartmentDto.name);
                 res.status(200).send("Updated");
             }
             catch (err) {
