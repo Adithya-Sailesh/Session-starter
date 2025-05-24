@@ -15,7 +15,7 @@ class EmployeeControlers{
         router.post("/",AuthorizationMiddleware, this.createEmployee.bind(this))
         router.get("/",this.getAllEmployees.bind(this))
         router.get("/:id",this.getEmloyeeById.bind(this))
-        router.put("/",AuthorizationMiddleware,this.updateEmployee)
+        router.put("/:id",AuthorizationMiddleware,this.updateEmployee)
         router.delete("/:id",AuthorizationMiddleware,this.deleteEmployee)
     }
 
@@ -40,12 +40,16 @@ class EmployeeControlers{
                         throw new HttpException(400, JSON.stringify(errors));
                     }
                     const savedEmployee = await this.employeeService.createEmployee(
-                        createEmployeeDto.email,
                         createEmployeeDto.name,
+                        createEmployeeDto.email,
                         createEmployeeDto.age,
                         createEmployeeDto.role,
                         createEmployeeDto.dept_id,
                         createEmployeeDto.password,
+                        createEmployeeDto.employeeId,
+                        createEmployeeDto.dateOfJoining,
+                        createEmployeeDto.experience,
+                        createEmployeeDto.status,
                         createEmployeeDto.address,
                         
                     );
@@ -81,17 +85,21 @@ class EmployeeControlers{
                         throw new HttpException(400, JSON.stringify(errors));
                     }
                     const update = await this.employeeService.updateEmployee(
-                        updateEmployeeDto.id,
-                        updateEmployeeDto.email,
+                        Number(req.params.id),
                         updateEmployeeDto.name,
+                        updateEmployeeDto.email,
                         updateEmployeeDto.age,
                         updateEmployeeDto.role,
                         updateEmployeeDto.dept_id,
                         updateEmployeeDto.password,
+                        updateEmployeeDto.employeeId,
+                        updateEmployeeDto.dateOfJoining,
+                        updateEmployeeDto.experience,
+                        updateEmployeeDto.status,
                         updateEmployeeDto.address
                         
                     );
-                    res.status(201).send("updated");
+                    res.status(200).send("updated");
                     } catch (error) {
                     next(error);
                     }   

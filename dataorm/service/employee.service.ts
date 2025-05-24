@@ -1,7 +1,7 @@
 import { StreamDescription } from "typeorm";
 import { CreateAddressDto } from "../dto/create-address.dto";
 import Address from "../entities/adress.entity";
-import Employee, { EmployeeRole } from "../entities/employee.entity";
+import Employee, { EmployeeRole, EmployeeStatus } from "../entities/employee.entity";
 import EmployeeRepository from "../repositories/employee.repostitorie";
 
 import bcrypt from 'bcrypt'
@@ -38,50 +38,53 @@ class EmployeeService{
   }
 
 
-    async createEmployee(email:string,name:string,age:number,role:EmployeeRole,dept_id:number,password:string,address:CreateAddressDto):Promise<Employee>{
-        // const emp=new Employee();
-        // emp.name=name
-        // emp.email=email
-        // emp.age=age
-        // emp.address=address
+    async createEmployee(name:string,email:string,age:number,role:EmployeeRole,dept_id:number,password:string,employeeId:string,dateOfJoining:Date,experience:number,status:EmployeeStatus,address:CreateAddressDto):Promise<Employee>{
         const newAddress = new Address();
         newAddress.line1 = address.line1;
         newAddress.pincode = address.pincode;
+        newAddress.line2=address.line2;
+        newAddress.houseNo=address.houseNo
         const newEmployee = new Employee();
         newEmployee.email = email;
         newEmployee.name = name;
         newEmployee.age = age;
         newEmployee.role=role;
+        newEmployee.employeeid=employeeId
+        newEmployee.dateOfJoining=dateOfJoining
+        newEmployee.experience=experience
+        newEmployee.status=status
         const dept=await this.departmentRepository.findbyid(dept_id)
         if(!dept){
-            throw new HttpException(401,"Department Not Found")
+            throw new HttpException(401,"Department Not Found to Add employee")
         }
         newEmployee.department=dept;
         newEmployee.password=  await bcrypt.hash(password,12);
         newEmployee.address = newAddress;
-        
         return this.employeeRepository.create(newEmployee)
     }
-    async updateEmployee(id:number,email:string,name:string,age:number,role:EmployeeRole,dept_id:number,password:string,address:CreateAddressDto):Promise<void>{
+    async updateEmployee(id:number,name:string,email:string,age:number,role:EmployeeRole,dept_id:number,password:string,employeeId:string,dateOfJoining:Date,experience:number,status:EmployeeStatus, address:CreateAddressDto):Promise<void>{
         this.logger.info("Updating Employee")
         const existingEmployee=await this.employeeRepository.findone(id);
         const dept=await this.departmentRepository.findbyid(dept_id)
         if(!dept){
-            throw new HttpException(401,"Department not found")
+            throw new HttpException(401,"Department not found To UPDATE Employee")
         }
         if(existingEmployee){
-            // const newEmployee=new Employee();
             existingEmployee.name=name
             existingEmployee.email=email
             existingEmployee.age=age
             existingEmployee.role=role
-            
-            
+            existingEmployee.experience=experience
+            existingEmployee.dateOfJoining=dateOfJoining
+            existingEmployee.status=status
+            existingEmployee.employeeid=employeeId
             existingEmployee.department=dept;
             existingEmployee.password=await bcrypt.hash(password,12);
                 if(existingEmployee.address){
                     existingEmployee.address.line1=address.line1
                     existingEmployee.address.pincode=address.pincode
+                    existingEmployee.address.line2=address.line2
+                    existingEmployee.address.houseNo=address.houseNo
                 }
             await this.employeeRepository.update(id,existingEmployee);
         }

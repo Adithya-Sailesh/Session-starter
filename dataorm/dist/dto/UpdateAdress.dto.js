@@ -24,4 +24,14 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], updateAddressDto.prototype, "pincode", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], updateAddressDto.prototype, "line2", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], updateAddressDto.prototype, "houseNo", void 0);
 //# sourceMappingURL=UpdateAdress.dto.js.map

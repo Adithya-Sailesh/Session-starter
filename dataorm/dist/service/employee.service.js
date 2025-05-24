@@ -47,24 +47,25 @@ class EmployeeService {
             return employee;
         });
     }
-    createEmployee(email, name, age, role, dept_id, password, address) {
+    createEmployee(name, email, age, role, dept_id, password, employeeId, dateOfJoining, experience, status, address) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const emp=new Employee();
-            // emp.name=name
-            // emp.email=email
-            // emp.age=age
-            // emp.address=address
             const newAddress = new adress_entity_1.default();
             newAddress.line1 = address.line1;
             newAddress.pincode = address.pincode;
+            newAddress.line2 = address.line2;
+            newAddress.houseNo = address.houseNo;
             const newEmployee = new employee_entity_1.default();
             newEmployee.email = email;
             newEmployee.name = name;
             newEmployee.age = age;
             newEmployee.role = role;
+            newEmployee.employeeid = employeeId;
+            newEmployee.dateOfJoining = dateOfJoining;
+            newEmployee.experience = experience;
+            newEmployee.status = status;
             const dept = yield this.departmentRepository.findbyid(dept_id);
             if (!dept) {
-                throw new httpException_1.default(401, "Department Not Found");
+                throw new httpException_1.default(401, "Department Not Found to Add employee");
             }
             newEmployee.department = dept;
             newEmployee.password = yield bcrypt_1.default.hash(password, 12);
@@ -72,25 +73,30 @@ class EmployeeService {
             return this.employeeRepository.create(newEmployee);
         });
     }
-    updateEmployee(id, email, name, age, role, dept_id, password, address) {
+    updateEmployee(id, name, email, age, role, dept_id, password, employeeId, dateOfJoining, experience, status, address) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.info("Updating Employee");
             const existingEmployee = yield this.employeeRepository.findone(id);
             const dept = yield this.departmentRepository.findbyid(dept_id);
             if (!dept) {
-                throw new httpException_1.default(401, "Department not found");
+                throw new httpException_1.default(401, "Department not found To UPDATE Employee");
             }
             if (existingEmployee) {
-                // const newEmployee=new Employee();
                 existingEmployee.name = name;
                 existingEmployee.email = email;
                 existingEmployee.age = age;
                 existingEmployee.role = role;
+                existingEmployee.experience = experience;
+                existingEmployee.dateOfJoining = dateOfJoining;
+                existingEmployee.status = status;
+                existingEmployee.employeeid = employeeId;
                 existingEmployee.department = dept;
                 existingEmployee.password = yield bcrypt_1.default.hash(password, 12);
                 if (existingEmployee.address) {
                     existingEmployee.address.line1 = address.line1;
                     existingEmployee.address.pincode = address.pincode;
+                    existingEmployee.address.line2 = address.line2;
+                    existingEmployee.address.houseNo = address.houseNo;
                 }
                 yield this.employeeRepository.update(id, existingEmployee);
             }

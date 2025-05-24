@@ -13,10 +13,10 @@ class Address extends AbstractEntity{
     @Column()
     pincode:string
 
-    @Column()
+    @Column({nullable:true})
     line2:string
 
-    @Column()
+    @Column({nullable:true})
     houseNo:string
 
     @OneToOne(() => Employee, (employee) => employee.address, {

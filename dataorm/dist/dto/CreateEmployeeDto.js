@@ -23,6 +23,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "employeeId", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_transformer_1.Type)(() => Date),
     (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], CreateEmployeeDto.prototype, "dateOfJoining", void 0);
@@ -66,7 +68,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateEmployeeDto.prototype, "dept_id", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(employee_entity_1.Status),
+    (0, class_validator_1.IsEnum)(employee_entity_1.EmployeeStatus),
     __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "status", void 0);
 //# sourceMappingURL=CreateEmployeeDto.js.map

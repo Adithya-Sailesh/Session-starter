@@ -13,7 +13,7 @@ export enum EmployeeRole{
 
 
 
-export enum Status{
+export enum EmployeeStatus{
   ACTIVE="ACTIVE",
   INACTIVE="INACTIVE",
   PROBATION="PROBATION",
@@ -32,19 +32,18 @@ class Employee extends AbstractEntity{
     @Column()
     age:number;
 
-    @Column()
+    @Column({nullable:true})
     employeeid:string;
 
-    @Column()
+    @Column({nullable:true})
     dateOfJoining:Date
 
-    @Column()
+    @Column({nullable:true})
     experience:number
-    
+
     @OneToOne(()=>Address,(address)=>address.employee,{
       cascade:true,
     })
-    // @JoinColumn()
     address:Address;
 
     @Column()
@@ -59,12 +58,14 @@ class Employee extends AbstractEntity{
 
     @Column({
       type:'enum',
-      enum:Status,
-      default:Status.INACTIVE
+      enum:EmployeeStatus,
+      default:EmployeeStatus.INACTIVE
     }) 
+    status:EmployeeStatus
+
     @ManyToOne(()=>Department,(department)=>department.employee,{
-      cascade:true,   
-      // onDelete:'SET NULL'
+      // cascade:true,   
+      onDelete:'SET NULL' //-- this should be i think
     })
     department:Department
   }

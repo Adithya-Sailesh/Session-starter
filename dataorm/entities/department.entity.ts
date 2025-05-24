@@ -11,11 +11,10 @@ class Department extends AbstractEntity{
     deptname:string
 
     @OneToMany(()=>Employee,(employee)=>employee.department,{
-        onDelete:"SET NULL"
+        // onDelete:"SET NULL" //wrong
         // cascade:true
     })
-    @JoinColumn()
-    employee:Employee
+    employee:Employee[] // employee:Employee[]
     
 }
 

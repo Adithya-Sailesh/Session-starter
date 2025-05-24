@@ -33,7 +33,7 @@ class DeparmentContollers {
     getAllDepartment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentService.getAlldept();
-            res.status(201).send(department);
+            res.status(200).send(department);
         });
     }
     getDeptById(req, res, next) {
@@ -44,7 +44,7 @@ class DeparmentContollers {
                 if (!dept) {
                     throw new httpException_1.default(401, "Dept Not Found");
                 }
-                res.status(201).send(dept);
+                res.status(200).send(dept);
             }
             catch (err) {
                 next(err);
@@ -60,7 +60,7 @@ class DeparmentContollers {
                     throw new httpException_1.default(401, "Dept Cannot be found");
                 }
                 const updateDept = yield this.departmentService.updateDepartment(id, req.body.deptname);
-                res.status(201).send("Updated");
+                res.status(200).send("Updated");
             }
             catch (err) {
                 next(err);

@@ -19,8 +19,19 @@ class UpdateEmployeeDto {
 exports.UpdateEmployeeDto = UpdateEmployeeDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "employeeId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_transformer_1.Type)(() => Date),
+    (0, class_validator_1.IsDate)(),
+    __metadata("design:type", Date)
+], UpdateEmployeeDto.prototype, "dateOfJoining", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], UpdateEmployeeDto.prototype, "id", void 0);
+], UpdateEmployeeDto.prototype, "experience", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(),
@@ -51,6 +62,10 @@ __decorate([
     (0, class_validator_1.IsEnum)(employee_entity_1.EmployeeRole),
     __metadata("design:type", String)
 ], UpdateEmployeeDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(employee_entity_1.EmployeeStatus),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
