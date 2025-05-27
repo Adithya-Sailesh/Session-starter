@@ -40,12 +40,3 @@ describe('AirbagService', () =>
     })
 
 })
-
-
-
-// describe('AirbagService', () => {
-//     it('deploys the airbag when a crash is detected', () => {
-//         expect(1).toEqual(1);
-//     });
-
-// })

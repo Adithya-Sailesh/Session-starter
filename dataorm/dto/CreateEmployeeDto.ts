@@ -47,8 +47,6 @@ export class CreateEmployeeDto {
   @IsNumber()
   dept_id:number
 
-
-
   @IsEnum(EmployeeStatus)
   status:EmployeeStatus
 
