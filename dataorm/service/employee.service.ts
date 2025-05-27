@@ -27,8 +27,6 @@ class EmployeeService{
     //         return employee
     //     }
     // }
-
-
      async getEmployeeById(id: number): Promise<Employee | null> {
       let employee = await this.employeeRepository.findone(id);
     if (!employee) {
@@ -87,20 +85,18 @@ class EmployeeService{
                     existingEmployee.address.houseNo=address.houseNo
                 }
             await this.employeeRepository.update(id,existingEmployee);
+            this.logger.info("Employee Updated")
         }
     }
-
-
     async deleteEmployee(id:number):Promise<void>{
         const existingEmployee=await this.employeeRepository.findone(id);
         if(existingEmployee){
+            this.logger.info('Employee Deleted')
             await this.employeeRepository.delete(id)
         }
-       
     }
 
     async findByEmail(email:string):Promise<Employee>{
-
         return this.employeeRepository.findbymail(email)
     }
 

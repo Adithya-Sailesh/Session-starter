@@ -7,14 +7,10 @@ class EmployeeRepository{
         async create(employee : Employee): Promise<Employee>{
             return this.repostiory.save(employee);
         }
-
-        
+   
         async findbymail(email:string):Promise<Employee>{
             return this.repostiory.findOneBy({email})
         }
-
-
-
         async findMany():Promise<Employee[]>{
 
             return this.repostiory.find({
@@ -22,24 +18,19 @@ class EmployeeRepository{
                         address:true,
                         department:true
                     }
-            }
-                
-            );
+            }  );
         }
-
         async findone(id:number):Promise<Employee>{
             return this.repostiory.findOne({
                 where:{id},
                 relations:{
                     address:true,
                     department:true
-                }
-                }
+                }}
             );
         };
 
         async update(id:number,employee:Employee):Promise<void>{
-                
             await this.repostiory.save({id , ...employee});
         }
 
@@ -47,10 +38,6 @@ class EmployeeRepository{
             const employee = await this.repostiory.findOne({ where: { id } });
             if(employee){
                 await this.repostiory.softDelete({id});
-            }
-            
-        }
+            }}
     }
-
-
     export default EmployeeRepository
